@@ -10,9 +10,6 @@ import 'package:voco_case_study/product/home/service/home_service.dart';
 
 part 'widget/user_listview.dart';
 
-final homeRiverpod = ChangeNotifierProvider((ref) => HomeRiverpod(
-    HomeService(Dio(BaseOptions(baseUrl: ConstantsString.baseUrl)))));
-
 class HomeView extends ConsumerStatefulWidget {
   const HomeView({super.key});
 
@@ -21,6 +18,8 @@ class HomeView extends ConsumerStatefulWidget {
 }
 
 class _HomeViewState extends ConsumerState<HomeView> {
+  final homeRiverpod = ChangeNotifierProvider((ref) => HomeRiverpod(
+      HomeService(Dio(BaseOptions(baseUrl: ConstantsString.baseUrl)))));
   final ScrollController _scrollController = ScrollController();
 
   @override
@@ -59,12 +58,14 @@ class _HomeViewState extends ConsumerState<HomeView> {
         body: body(watchHome, userList));
   }
 
+// kullanıcı listesinin getirilmesi durumlarına göre farklı durumları sağlar
   body(HomeRiverpod watchHome, List<Data> userList) {
     switch (watchHome.status) {
       case HomeStatus.initial:
         return const LoadingWidget();
       case HomeStatus.success:
         return UserListview(
+            homeRiverpod: homeRiverpod,
             scrollController: _scrollController,
             watchHome: watchHome,
             userList: userList);

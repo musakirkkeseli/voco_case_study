@@ -1,3 +1,4 @@
+// uygulama işl açıldığında çalışacak olan işlemleri barındırır
 import 'package:flutter/material.dart';
 import 'package:voco_case_study/core/cache_manager.dart';
 import 'package:voco_case_study/core/widget/app_error_widget.dart';

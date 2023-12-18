@@ -2,7 +2,6 @@
 
 import 'package:dio/dio.dart';
 import 'package:voco_case_study/product/auth/model/auth_request_model.dart';
-import 'package:voco_case_study/product/auth/model/auth_successful_response_model.dart';
 
 abstract class IAuthService {
   final Dio dio;
@@ -14,10 +13,8 @@ abstract class IAuthService {
   final String registerPath = IAuthServicePath.register.rawValue;
 
 //requesti atacak olan fonksiyon tanımlanır
-  Future<AuthSuccessfulResponseModel?> postLogin(
-      AuthRequestModel authRequestModel);
-  Future<AuthSuccessfulResponseModel?> postRegister(
-      AuthRequestModel authRequestModel);
+  Future postLogin(AuthRequestModel authRequestModel);
+  Future postRegister(AuthRequestModel authRequestModel);
 }
 
 enum IAuthServicePath { login, register }

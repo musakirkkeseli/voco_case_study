@@ -1,13 +1,16 @@
 part of '../home_view.dart';
 
+// kullanıcı listesini gösterir
 class UserListview extends ConsumerWidget {
-  const UserListview({
+  UserListview({
     super.key,
+    required this.homeRiverpod,
     required ScrollController scrollController,
     required this.watchHome,
     required this.userList,
   }) : _scrollController = scrollController;
 
+  ChangeNotifierProvider<HomeRiverpod> homeRiverpod;
   final ScrollController _scrollController;
   final HomeRiverpod watchHome;
   final List<Data> userList;
@@ -20,6 +23,7 @@ class UserListview extends ConsumerWidget {
         itemCount: watchHome.sonFlag ? userList.length : userList.length + 1,
         itemBuilder: (context, index) {
           if (index >= userList.length && watchHome.sonFlag == false) {
+            // sayfalama yapısına uygun şekilde çalışır ve parça parça veri almayı tetikler
             return TextButton(
                 onPressed: () {
                   ref.read(homeRiverpod).moreFetch();

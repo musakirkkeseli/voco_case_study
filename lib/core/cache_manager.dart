@@ -1,3 +1,4 @@
+// keşleme işlemi için bir katman görevi görür ve paket bağımlılıklarını azaltır
 import 'package:shared_preferences/shared_preferences.dart';
 
 final class CacheManager {

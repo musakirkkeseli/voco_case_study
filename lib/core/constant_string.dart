@@ -1,4 +1,5 @@
-class ConstantsString {
+// uygulama geneli stringlerin tutulduğu sınıf
+final class ConstantsString {
   ConstantsString._();
 
   static const String baseUrl = "https://reqres.in/";
@@ -11,4 +12,7 @@ class ConstantsString {
   static const String minCharacterWarning = 'Please at least 8 characters';
   static const String vocoIconUrl =
       'https://play-lh.googleusercontent.com/pNGHxHX2B7h-WqNViSPY-Y9pLodmqQaEgenK_3Ne6e7jbLayvxEgX2toWXvS7g1T-EQ=w240-h480-rw';
+  static const String enterEmail = "Please enter a valid email";
+  static const String password = "Password";
+  static const String email = "Email";
 }

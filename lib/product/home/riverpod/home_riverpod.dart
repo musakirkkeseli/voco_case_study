@@ -8,13 +8,13 @@ enum HomeStatus { initial, success, failure, logout }
 class HomeRiverpod extends ChangeNotifier {
   final IHomeService service;
   HomeStatus status = HomeStatus.initial;
-  // final bool success;
   bool sonFlag = false;
   int flag = 0;
   ListUsersResponseModel? listUsersResponseModel;
 
   HomeRiverpod(this.service);
 
+// sayfa ilk açıldığında ilk kısım veriyi getirir
   void firstFetch() async {
     final data = await fetch();
     print(data.runtimeType);
@@ -30,6 +30,7 @@ class HomeRiverpod extends ChangeNotifier {
     }
   }
 
+// kullanıcının tetiklemesiyle beraber daha fazla veriyi getirir
   void moreFetch() async {
     final data = await fetch();
     if (data is ListUsersResponseModel) {
@@ -44,6 +45,7 @@ class HomeRiverpod extends ChangeNotifier {
     }
   }
 
+// veri getirme işlemi
   fetch() async {
     flag += 1;
     final data = await service.getListUsers(flag);
@@ -51,6 +53,7 @@ class HomeRiverpod extends ChangeNotifier {
     return data;
   }
 
+// kullanıcı çıkış yaptığınd gerekli temizliği yapar
   void logout() {
     CacheManager.db.deleteToken();
     status = HomeStatus.logout;

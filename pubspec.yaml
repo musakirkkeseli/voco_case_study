@@ -18,9 +18,13 @@ dependencies:
 
   # service
   dio: ^5.4.0
+  email_validator: ^2.1.17
 
   # cache
   shared_preferences: ^2.2.2
+
+  # desing
+  flutter_svg: ^2.0.9
 
   cupertino_icons: ^1.0.2
 

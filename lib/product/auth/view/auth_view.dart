@@ -1,6 +1,8 @@
 import 'package:dio/dio.dart';
+import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:voco_case_study/core/constant_string.dart';
 import 'package:voco_case_study/core/widget/loading_widget.dart';
 import 'package:voco_case_study/product/auth/model/auth_request_model.dart';
@@ -30,6 +32,7 @@ class _AuthViewState extends ConsumerState<AuthView> {
       authRiverpod,
       (previous, next) {
         switch (next.status) {
+          // login ve register işlemleri için request atıldığı sırada kullanıcıyı bekleten ekran
           case AuthStatus.loading:
             showDialog(
                 context: context,
@@ -37,18 +40,21 @@ class _AuthViewState extends ConsumerState<AuthView> {
                       insetPadding: const EdgeInsets.all(0),
                       backgroundColor: Colors.transparent,
                       child: WillPopScope(
-                          child: LoadingWidget(), onWillPop: () async => false),
+                          child: const LoadingWidget(),
+                          onWillPop: () async => false),
                     ));
             break;
+          // login register işlemlerinde oluşan hatayı ekrana çıkarır
           case AuthStatus.failure:
             Navigator.pop(context);
             showDialog(
               context: context,
-              builder: (context) => const AlertDialog(
-                title: Text("Beklenmedik bir hata oluştu"),
+              builder: (context) => AlertDialog(
+                title: Text(next.errorModel.error ?? ""),
               ),
-            );
+            ).then((value) => read.statusClean());
             break;
+          // işlem başarılı ise kullanıcı listesine yönlendirir
           case AuthStatus.success:
             Navigator.of(context)
               ..pop()
@@ -63,6 +69,7 @@ class _AuthViewState extends ConsumerState<AuthView> {
 
     return Scaffold(
         appBar: AppBar(
+          // watch.pageStatus değeri kullanıcının sayfa değerinin login mi yoksa register mı bilgisini içerir
           title: Text(watch.pageStatus == AuthPageStatus.login
               ? ConstantsString.login
               : ConstantsString.register),
@@ -75,27 +82,19 @@ class _AuthViewState extends ConsumerState<AuthView> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Image.network(
-                  ConstantsString.vocoIconUrl,
-                  height: 100.0, // Adjust the height as needed
-                  width: 100.0, // Adjust the width as needed
-                  fit: BoxFit.contain,
+                SvgPicture.network(
+                  "https://vocoapp.com/logo-icon.svg",
+                  height: 100,
+                  width: 100,
                 ),
-                const SizedBox(height: 16.0),
+                const SizedBox(height: 32.0),
                 TextFormField(
                   controller: controllerEmail,
-                  validator: (val) {
-                    if (val != null) {
-                      if (val.isEmpty) {
-                        return ConstantsString.textFieldEmptyWarning;
-                      } else if (val.length < 8) {
-                        return ConstantsString.minCharacterWarning;
-                      }
-                    }
-                    return null;
-                  },
+                  validator: (val) => EmailValidator.validate(val ?? "")
+                      ? null
+                      : ConstantsString.enterEmail,
                   decoration: const InputDecoration(
-                    labelText: 'Email',
+                    labelText: ConstantsString.email,
                     icon: Icon(Icons.email),
                   ),
                 ),
@@ -113,7 +112,7 @@ class _AuthViewState extends ConsumerState<AuthView> {
                     return null;
                   },
                   decoration: const InputDecoration(
-                    labelText: 'Password',
+                    labelText: ConstantsString.password,
                     icon: Icon(Icons.lock),
                   ),
                   obscureText: true,
@@ -122,6 +121,7 @@ class _AuthViewState extends ConsumerState<AuthView> {
                 ElevatedButton(
                   onPressed: () async {
                     if (_formKey.currentState!.validate()) {
+                      // reguest gönder
                       read.fetch(AuthRequestModel(
                           email: controllerEmail.text,
                           password: controllerPassword.text));
@@ -134,6 +134,7 @@ class _AuthViewState extends ConsumerState<AuthView> {
                 const SizedBox(height: 16.0),
                 TextButton(
                   onPressed: () {
+                    // loginden registere registerden logine
                     read.changePage();
                   },
                   child: Text(watch.pageStatus == AuthPageStatus.login
